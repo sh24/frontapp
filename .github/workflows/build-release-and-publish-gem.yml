@@ -1,0 +1,17 @@
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+  packages: write
+
+name: Build Release and Publish Gem
+
+jobs:
+  build-release-and-publish-gem:
+    uses: sh24/github-actions/.github/workflows/build-release-and-publish-gem.yml@main
+    with:
+      gem-name: ${{ github.event.repository.name }}

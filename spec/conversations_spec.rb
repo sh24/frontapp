@@ -542,10 +542,10 @@ RSpec.describe 'Conversations' do
 
   it "can search conversations" do
     query = "is:assigned before:1649974320"
-    stub_request(:get, "#{base_url}/conversations/search/#{URI.encode(query)}").
+    stub_request(:get, "#{base_url}/conversations/search/is:assigned%20before:1649974320?limit=10").
       with( headers: headers).
       to_return(status: 200, body: all_conversations_response)
-    frontapp.search_conversations(query)
+    frontapp.search_conversations(query, {limit: 10})
   end
 
   it "can get a specific conversation" do
@@ -624,7 +624,7 @@ RSpec.describe 'Conversations' do
     stub_request(:delete, "#{base_url}/conversations/#{conversation_id}/links").
       with( headers: headers).
       to_return(status: 204, body: nil)
-    frontapp.delete_tag!(conversation_id, data)
+    frontapp.remove_conversation_links!(conversation_id, data)
   end
 
   it "can remove conversation followers by id" do

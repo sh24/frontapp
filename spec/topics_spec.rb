@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'frontapp'
 
 RSpec.describe 'Topics' do
+  # https://dev.frontapp.com/reference/plugin-sdk-topic
+  before { skip "This enpdoint is deprecated" }
 
   let(:headers) {
     {
