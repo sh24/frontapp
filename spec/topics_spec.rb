@@ -2,6 +2,8 @@ require 'spec_helper'
 require 'frontapp'
 
 RSpec.describe 'Topics' do
+  # https://dev.frontapp.com/reference/plugin-sdk-topic
+  before { skip "This enpdoint is deprecated" }
 
   let(:headers) {
     {
@@ -138,7 +140,6 @@ RSpec.describe 'Topics' do
   }
 
   it "can get all topic conversations" do
-    skip "This endpoint is deprecated"
     stub_request(:get, "#{base_url}/topics/#{topic_id}/conversations").
       with( headers: headers).
       to_return(status: 200, body: topic_conversations_response)
