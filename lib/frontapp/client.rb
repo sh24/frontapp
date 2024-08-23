@@ -1,6 +1,6 @@
 require 'uri'
-require 'http'
-require 'json'
+require 'faraday'
+require 'faraday/multipart'
 require_relative 'client/attachments.rb'
 require_relative 'client/channels.rb'
 require_relative 'client/comments.rb'
@@ -45,24 +45,43 @@ module Frontapp
     def initialize(options={})
       auth_token = options[:auth_token]
       user_agent = options[:user_agent] || "Frontapp Ruby Gem #{VERSION}"
-      @headers = HTTP.headers({
-        Accept: "application/json",
-        Authorization: "Bearer #{auth_token}",
-        "User-Agent": user_agent
-      })
+
+      @headers = Faraday.new(base_url, {
+        headers: {
+          "Accept": 'application/json',
+          "User-Agent": user_agent,
+        }
+      }) do |f|
+        f.request :authorization, 'Bearer', auth_token
+        f.request :json
+        f.response :json
+      end
+
+      @multipart_headers = Faraday.new(base_url, {
+        headers: {
+          "Accept": 'application/json',
+          "User-Agent": user_agent,
+          "Content-Type": "multipart/form-data"
+        }
+      }) do |f|
+        f.request :authorization, 'Bearer', auth_token
+        f.request :multipart
+        f.response :json
+      end
+
     end
 
     def list(path, params = {})
       items = []
       last_page = false
       query = format_query(params)
-      url = "#{base_url}#{path}?#{query}"
+      url = "#{path}?#{query}"
       until last_page
         res = @headers.get(url)
-        if !res.status.success?
+        if !res.success?
           raise Error.from_response(res)
         end
-        response = JSON.parse(res.to_s)
+        response = res.body
         items.concat(response["_results"]) if response["_results"]
         pagination = response["_pagination"]
         if pagination.nil? || pagination["next"].nil?
@@ -75,62 +94,62 @@ module Frontapp
     end
 
     def get(path)
-      res = @headers.get("#{base_url}#{path}")
-      if !res.status.success?
+      res = @headers.get(path)
+      if !res.success?
         raise Error.from_response(res)
       end
-      JSON.parse(res.to_s)
+      res.body
     end
 
     def get_plain(path)
-      headers_copy = @headers.dup
-      res = @headers.accept("text/plain").get("#{base_url}#{path}")
-      if !res.status.success?
+      # TODO: Plain Text
+      res = @headers.accept("text/plain").get(path)
+      if !res.success?
         raise Error.from_response(res)
       end
-      res.to_s
+      res.body
     end
 
     def get_raw(path)
-      headers_copy = @headers.dup
-      res = @headers.get("#{base_url}#{path}")
-      if !res.status.success?
+      res = @headers.get(path)
+      if !res.success?
         raise Error.from_response(res)
       end
-      res
+      res.body
     end
 
-    def create(path, body)
-      res = @headers.post("#{base_url}#{path}", json: body)
-      response = JSON.parse(res.to_s)
-      if !res.status.success?
+    def create(path, body, multipart: false)
+      api_client = multipart ? @multipart_headers : @headers
+      res = api_client.post(path, body)
+      if !res.success?
         raise Error.from_response(res)
       end
-      response
+      res.body
     end
 
     def create_without_response(path, body)
-      res = @headers.post("#{base_url}#{path}", json: body)
-      if !res.status.success?
+      res = @headers.post(path, body)
+      if !res.success?
         raise Error.from_response(res)
       end
     end
 
     def update(path, body)
-      res = @headers.patch("#{base_url}#{path}", json: body)
-      if !res.status.success?
+      res = @headers.patch(path, body)
+      if !res.success?
         raise Error.from_response(res)
       end
     end
 
     def delete(path, body = {})
-      res = @headers.delete("#{base_url}#{path}", json: body)
-      if !res.status.success?
+      res = @headers.delete(path, body)
+      if !res.success?
         raise Error.from_response(res)
       end
     end
 
   private
+
     def format_query(params)
       res = []
       q = params.delete(:q)
