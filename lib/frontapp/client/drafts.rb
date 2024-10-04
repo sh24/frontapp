@@ -46,6 +46,10 @@ module Frontapp
                                 :should_add_default_signature)
         create("channels/#{channel_id}/drafts", cleaned)
       end
+
+      def list_conversation_drafts(conversation_id)
+        get("conversations/#{conversation_id}/drafts")
+      end
     end
   end
 end
