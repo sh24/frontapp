@@ -30,6 +30,7 @@ module Frontapp
     include Frontapp::Client::ContactGroups
     include Frontapp::Client::Contacts
     include Frontapp::Client::Conversations
+    include Frontapp::Client::Drafts
     include Frontapp::Client::Events
     include Frontapp::Client::Inboxes
     include Frontapp::Client::Messages
