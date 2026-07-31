@@ -569,6 +569,30 @@ RSpec.describe 'Conversations' do
     frontapp.update_conversation!(conversation_id, data)
   end
 
+  it "can trash a conversation" do
+    stub_request(:patch, "#{base_url}/conversations/#{conversation_id}").
+      with( body: { status: "trashed" }.to_json,
+            headers: headers).
+      to_return(status: 204)
+    frontapp.trash_conversation!(conversation_id)
+  end
+
+  it "can delete a conversation" do
+    stub_request(:delete, "#{base_url}/conversations/#{conversation_id}").
+      with( headers: headers).
+      to_return(status: 204, body: nil)
+    frontapp.delete_conversation!(conversation_id)
+  end
+
+  it "raises when deleting a conversation that has not been trashed" do
+    stub_request(:delete, "#{base_url}/conversations/#{conversation_id}").
+      with( headers: headers).
+      to_return(status: 400, body: %{{"_error":{"status":400,"title":"Bad request","message":"Conversation must have status trashed before it can be permanently deleted"}}})
+    expect {
+      frontapp.delete_conversation!(conversation_id)
+    }.to raise_error(Frontapp::BadRequestError)
+  end
+
   it "can get all the inboxes a conversation is in" do
     stub_request(:get, "#{base_url}/conversations/#{conversation_id}/inboxes").
       with( headers: headers).
