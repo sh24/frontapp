@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/sh24/frontapp/compare/v1.1.0...v1.1.1) (2026-07-31)
+
+
+### Bug Fixes
+
+* Correct the trash method ([#8](https://github.com/sh24/frontapp/issues/8)) ([1ad0ec3](https://github.com/sh24/frontapp/commit/1ad0ec37d8c4712188065a34669626972d234788))
+
 ## [1.1.0](https://github.com/sh24/frontapp/compare/v1.0.0...v1.1.0) (2026-07-31)
 
 
