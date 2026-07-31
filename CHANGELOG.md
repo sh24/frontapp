@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/sh24/frontapp/compare/v1.0.0...v1.1.0) (2026-07-31)
+
+
+### Features
+
+* Enable trashing and deletion ([#6](https://github.com/sh24/frontapp/issues/6)) ([1abeb10](https://github.com/sh24/frontapp/commit/1abeb10acc676e55ba9cce6696948502d9567704))
+
 ## 1.0.0 (2023-04-11)
 
 
