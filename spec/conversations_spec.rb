@@ -571,7 +571,7 @@ RSpec.describe 'Conversations' do
 
   it "can trash a conversation" do
     stub_request(:patch, "#{base_url}/conversations/#{conversation_id}").
-      with( body: { status: "trashed" }.to_json,
+      with( body: { status: "deleted" }.to_json,
             headers: headers).
       to_return(status: 204)
     frontapp.trash_conversation!(conversation_id)

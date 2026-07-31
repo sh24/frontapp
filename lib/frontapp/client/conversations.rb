@@ -50,8 +50,13 @@ module Frontapp
       #
       # Moves the conversation to the trash. This is reversible, and is a
       # prerequisite for delete_conversation!
+      #
+      # Note that the status to send is "deleted", which is what Front calls the
+      # trash on this endpoint. Its update enum is archived/open/deleted/spam,
+      # so "trashed" is rejected with a 400 despite being the wording used by
+      # the delete endpoint.
       def trash_conversation!(conversation_id)
-        update_conversation!(conversation_id, { status: "trashed" })
+        update_conversation!(conversation_id, { status: "deleted" })
       end
 
       # Parameters

@@ -163,7 +163,8 @@ client.update_conversation!("cnv_55c8c149", {
   tags: ["time travel"]
 })
 
-# Move a conversation to the trash
+# Move a conversation to the trash (sends status "deleted", which is Front's
+# name for the trash on this endpoint)
 client.trash_conversation!("cnv_55c8c149")
 
 # Permanently delete a conversation and all of its messages.
