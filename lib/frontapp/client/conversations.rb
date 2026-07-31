@@ -43,6 +43,32 @@ module Frontapp
       end
 
       # Parameters
+      # Name             Type    Description
+      # ------------------------------------
+      # conversation_id  string  Id of the conversation to move to the trash
+      # ------------------------------------
+      #
+      # Moves the conversation to the trash. This is reversible, and is a
+      # prerequisite for delete_conversation!
+      def trash_conversation!(conversation_id)
+        update_conversation!(conversation_id, { status: "trashed" })
+      end
+
+      # Parameters
+      # Name             Type    Description
+      # ------------------------------------
+      # conversation_id  string  Id of the conversation to permanently delete
+      # ------------------------------------
+      #
+      # Permanently deletes the conversation and all of its messages. The
+      # conversation must already have the status "trashed", otherwise Front
+      # responds with a 400. This action cannot be undone.
+      # Requires a token with the conversations:delete scope.
+      def delete_conversation!(conversation_id)
+        delete("conversations/#{conversation_id}")
+      end
+
+      # Parameters
       # Name         Type    Description
       # --------------------------------
       # conversation_id  string  Id or email of the requested conversation

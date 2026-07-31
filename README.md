@@ -163,6 +163,14 @@ client.update_conversation!("cnv_55c8c149", {
   tags: ["time travel"]
 })
 
+# Move a conversation to the trash
+client.trash_conversation!("cnv_55c8c149")
+
+# Permanently delete a conversation and all of its messages.
+# The conversation must already be trashed, and this cannot be undone.
+# Requires a token with the conversations:delete scope.
+client.delete_conversation!("cnv_55c8c149")
+
 # Get all inboxes a conversation is in
 inboxes = client.get_conversation_inboxes("cnv_55c8c149")
 
